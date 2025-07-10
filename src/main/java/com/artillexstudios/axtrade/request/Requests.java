@@ -25,7 +25,12 @@ public class Requests {
     private static final ArrayList<Request> requests = new ArrayList<>();
 
     public static void addRequest(@NotNull Player sender, @NotNull Player receiver) {
-        final Map<String, String> replacements = Map.of("%player%", VaultHelper.getDisplayName(receiver));
+        final Map<String, String> replacements = Map.of(
+            "%player%", receiver.getName(),
+            "%player-raw%", receiver.getName(),
+            "%player-prefix%", VaultHelper.getPlayerPrefix(receiver) != null ? VaultHelper.getPlayerPrefix(receiver) : "",
+            "%player-suffix%", VaultHelper.getPlayerSuffix(receiver) != null ? VaultHelper.getPlayerSuffix(receiver) : ""
+        );
 
         boolean disallowSameIp = CONFIG.getBoolean("disallow-same-ip-trade", false);
         if (disallowSameIp && sender.getAddress() != null && receiver.getAddress() != null && sender.getAddress().getAddress().equals(receiver.getAddress().getAddress())) {
@@ -98,7 +103,12 @@ public class Requests {
 
         MESSAGEUTILS.sendLang(sender, "request.sent-sender", replacements);
 
-        Map<String, String> replacements2 = Map.of("%player%", VaultHelper.getDisplayName(sender));
+        Map<String, String> replacements2 = Map.of(
+            "%player%", VaultHelper.getDisplayName(sender),
+            "%player-raw%", sender.getName(),
+            "%player-prefix%", VaultHelper.getPlayerPrefix(sender) != null ? VaultHelper.getPlayerPrefix(sender) : "",
+            "%player-suffix%", VaultHelper.getPlayerSuffix(sender) != null ? VaultHelper.getPlayerSuffix(sender) : ""
+        );
         if (LANG.getSection("request.sent-receiver") == null) // this is for backwards compatibility
             MESSAGEUTILS.sendLang(receiver, "request.sent-receiver", replacements2);
         else {
@@ -106,10 +116,10 @@ public class Requests {
             receiverWrap.message(StringUtils.format(CONFIG.getString("prefix") + LANG.getString("request.sent-receiver.info"), replacements2));
             receiverWrap.message(StringUtils.format(LANG.getString("request.sent-receiver.accept.message"), replacements2)
                     .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, StringUtils.format(LANG.getString("request.sent-receiver.accept.hover"), replacements2)))
-                    .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/trade accept " + sender.getName())));
-            receiverWrap.message(StringUtils.format(LANG.getString("request.sent-receiver.deny.message"), replacements2)
+                    .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/trade accept " + sender.getName()))
+                    .append(StringUtils.format(" " + LANG.getString("request.sent-receiver.deny.message"), replacements2)
                     .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, StringUtils.format(LANG.getString("request.sent-receiver.deny.hover"), replacements2)))
-                    .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/trade deny " + sender.getName())));
+                    .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/trade deny " + sender.getName()))));
         }
         SoundUtils.playSound(sender, "requested");
         SoundUtils.playSound(receiver, "requested");
