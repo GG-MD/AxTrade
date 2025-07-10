@@ -5,6 +5,7 @@ import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axtrade.api.events.AxTradeRequestEvent;
 import com.artillexstudios.axtrade.trade.Trades;
 import com.artillexstudios.axtrade.utils.SoundUtils;
+import com.artillexstudios.axtrade.utils.VaultHelper;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
@@ -24,7 +25,7 @@ public class Requests {
     private static final ArrayList<Request> requests = new ArrayList<>();
 
     public static void addRequest(@NotNull Player sender, @NotNull Player receiver) {
-        final Map<String, String> replacements = Map.of("%player%", receiver.getName());
+        final Map<String, String> replacements = Map.of("%player%", VaultHelper.getDisplayName(receiver));
 
         boolean disallowSameIp = CONFIG.getBoolean("disallow-same-ip-trade", false);
         if (disallowSameIp && sender.getAddress() != null && receiver.getAddress() != null && sender.getAddress().getAddress().equals(receiver.getAddress().getAddress())) {
@@ -97,7 +98,7 @@ public class Requests {
 
         MESSAGEUTILS.sendLang(sender, "request.sent-sender", replacements);
 
-        Map<String, String> replacements2 = Map.of("%player%", sender.getName());
+        Map<String, String> replacements2 = Map.of("%player%", VaultHelper.getDisplayName(sender));
         if (LANG.getSection("request.sent-receiver") == null) // this is for backwards compatibility
             MESSAGEUTILS.sendLang(receiver, "request.sent-receiver", replacements2);
         else {

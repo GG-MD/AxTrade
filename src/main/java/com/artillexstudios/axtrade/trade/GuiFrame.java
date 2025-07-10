@@ -5,6 +5,7 @@ import com.artillexstudios.axapi.nms.wrapper.ServerPlayerWrapper;
 import com.artillexstudios.axapi.utils.NumberUtils;
 import com.artillexstudios.axapi.utils.PlayerTextures;
 import com.artillexstudios.axtrade.utils.ItemBuilderUtil;
+import com.artillexstudios.axtrade.utils.VaultHelper;
 import dev.triumphteam.gui.components.GuiAction;
 import dev.triumphteam.gui.guis.BaseGui;
 import dev.triumphteam.gui.guis.GuiItem;
@@ -54,12 +55,35 @@ public class GuiFrame {
 
         final PlayerTextures selfTextures = ServerPlayerWrapper.wrap(player.getPlayer()).textures();
         final PlayerTextures otherTextures = ServerPlayerWrapper.wrap(trade.getOtherPlayer(player.getPlayer())).textures();
+        final Player partnerPlayer = trade.getOtherPlayer(player).getPlayer();
 
         final HashMap<String, String> map = new HashMap<>(replacements);
         map.put("%own-head%", selfTextures.texture() == null ? "" : selfTextures.texture());
         map.put("%partner-head%", otherTextures.texture() == null ? "" : otherTextures.texture());
-        map.put("%own-name%", player.getPlayer().getName());
-        map.put("%partner-name%", trade.getOtherPlayer(player).getPlayer().getName());
+        
+        // Vault prefix/suffix support
+        String ownPrefix = VaultHelper.getPlayerPrefix(player.getPlayer());
+        String ownSuffix = VaultHelper.getPlayerSuffix(player.getPlayer());
+        String partnerPrefix = VaultHelper.getPlayerPrefix(partnerPlayer);
+        String partnerSuffix = VaultHelper.getPlayerSuffix(partnerPlayer);
+        
+        // Names through Vault (with prefixes)
+        map.put("%own-name%", VaultHelper.getDisplayName(player.getPlayer()));
+        map.put("%partner-name%", VaultHelper.getDisplayName(partnerPlayer));
+        
+        // Raw names without prefixes (for backward compatibility)
+        map.put("%own-raw-name%", player.getPlayer().getName());
+        map.put("%partner-raw-name%", partnerPlayer.getName());
+        
+        // Individual prefix/suffix placeholders
+        map.put("%own-prefix%", ownPrefix != null ? ownPrefix : "");
+        map.put("%own-suffix%", ownSuffix != null ? ownSuffix : "");
+        map.put("%partner-prefix%", partnerPrefix != null ? partnerPrefix : "");
+        map.put("%partner-suffix%", partnerSuffix != null ? partnerSuffix : "");
+        
+        // Display names (duplicate for compatibility)
+        map.put("%own-display-name%", VaultHelper.getDisplayName(player.getPlayer()));
+        map.put("%partner-display-name%", VaultHelper.getDisplayName(partnerPlayer));
 
         return ItemBuilderUtil.newBuilder(file.getSection(key), map, player).get();
     }

@@ -10,6 +10,7 @@ import com.artillexstudios.axtrade.trade.Trades;
 import com.artillexstudios.axtrade.utils.CommandMessages;
 import com.artillexstudios.axtrade.utils.NumberUtils;
 import com.artillexstudios.axtrade.utils.SoundUtils;
+import com.artillexstudios.axtrade.utils.VaultHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -61,7 +62,7 @@ public class Commands implements OrphanCommand {
     public void accept(@NotNull Player sender, @NotNull Player other) {
         var request = Requests.getRequest(sender, other);
         if (request == null || request.getSender().equals(sender) || !request.isActive()) {
-            MESSAGEUTILS.sendLang(sender, "request.no-request", Map.of("%player%", other.getName()));
+            MESSAGEUTILS.sendLang(sender, "request.no-request", Map.of("%player%", VaultHelper.getDisplayName(other)));
             return;
         }
 
@@ -72,13 +73,13 @@ public class Commands implements OrphanCommand {
     public void deny(@NotNull Player sender, @NotNull Player other) {
         var request = Requests.getRequest(sender, other);
         if (request == null || request.getSender().equals(sender) || !request.isActive()) {
-            MESSAGEUTILS.sendLang(sender, "request.no-request", Map.of("%player%", other.getName()));
+            MESSAGEUTILS.sendLang(sender, "request.no-request", Map.of("%player%", VaultHelper.getDisplayName(other)));
             return;
         }
 
         request.deactivate();
-        MESSAGEUTILS.sendLang(request.getSender(), "request.deny-sender", Map.of("%player%", request.getReceiver().getName()));
-        MESSAGEUTILS.sendLang(request.getReceiver(), "request.deny-receiver", Map.of("%player%", request.getSender().getName()));
+        MESSAGEUTILS.sendLang(request.getSender(), "request.deny-sender", Map.of("%player%", VaultHelper.getDisplayName(request.getReceiver())));
+        MESSAGEUTILS.sendLang(request.getReceiver(), "request.deny-receiver", Map.of("%player%", VaultHelper.getDisplayName(request.getSender())));
         SoundUtils.playSound(request.getSender(), "deny");
         SoundUtils.playSound(request.getReceiver(), "deny");
     }

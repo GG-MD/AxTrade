@@ -3,6 +3,7 @@ package com.artillexstudios.axtrade.trade;
 import com.artillexstudios.axapi.scheduler.Scheduler;
 import com.artillexstudios.axtrade.request.Request;
 import com.artillexstudios.axtrade.request.Requests;
+import com.artillexstudios.axtrade.utils.VaultHelper;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -31,7 +32,7 @@ public class TradeTicker {
             while (iterator.hasNext()) {
                 Request request = iterator.next();
                 if (System.currentTimeMillis() - request.getTime() <= CONFIG.getInt("trade-request-expire-seconds", 60) * 1_000L) continue;
-                MESSAGEUTILS.sendLang(request.getSender(), "request.expired", Map.of("%player%", request.getReceiver().getName()));
+                MESSAGEUTILS.sendLang(request.getSender(), "request.expired", Map.of("%player%", VaultHelper.getDisplayName(request.getReceiver())));
                 iterator.remove();
             }
         }, 20, 20);

@@ -1,6 +1,7 @@
 package com.artillexstudios.axtrade.trade;
 
 import com.artillexstudios.axtrade.utils.SoundUtils;
+import com.artillexstudios.axtrade.utils.VaultHelper;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,8 +16,8 @@ public class Trades {
     public static void addTrade(Player p1, Player p2) {
         Trade trade = new Trade(p1, p2);
         trades.add(trade);
-        MESSAGEUTILS.sendLang(p1, "trade.started", Map.of("%player%", p2.getName()));
-        MESSAGEUTILS.sendLang(p2, "trade.started", Map.of("%player%", p1.getName()));
+        MESSAGEUTILS.sendLang(p1, "trade.started", Map.of("%player%", VaultHelper.getDisplayName(p2)));
+        MESSAGEUTILS.sendLang(p2, "trade.started", Map.of("%player%", VaultHelper.getDisplayName(p1)));
         SoundUtils.playSound(p1, "started");
         SoundUtils.playSound(p2, "started");
     }

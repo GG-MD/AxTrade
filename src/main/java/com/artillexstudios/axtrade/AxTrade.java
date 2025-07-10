@@ -20,6 +20,7 @@ import com.artillexstudios.axtrade.listeners.TradeListeners;
 import com.artillexstudios.axtrade.trade.TradeTicker;
 import com.artillexstudios.axtrade.utils.NumberUtils;
 import com.artillexstudios.axtrade.utils.UpdateNotifier;
+import com.artillexstudios.axtrade.utils.VaultHelper;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -70,6 +71,7 @@ public final class AxTrade extends AxPlugin {
         getServer().getPluginManager().registerEvents(new TradeListeners(), this);
 
         HookManager.setupHooks();
+        VaultHelper.setupChat();
         NumberUtils.reload();
 
         TradeTicker.start();

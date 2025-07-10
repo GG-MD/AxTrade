@@ -10,6 +10,7 @@ import com.artillexstudios.axtrade.utils.HistoryUtils;
 import com.artillexstudios.axtrade.utils.NumberUtils;
 import com.artillexstudios.axtrade.utils.SoundUtils;
 import com.artillexstudios.axtrade.utils.TaxUtils;
+import com.artillexstudios.axtrade.utils.VaultHelper;
 import com.artillexstudios.axtrade.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -71,8 +72,8 @@ public class Trade {
             player2.getPlayer().getInventory().addItem(itemStack);
         });
         HistoryUtils.writeToHistory(String.format("Aborted: %s - %s", player1.getPlayer().getName(), player2.getPlayer().getName()));
-        MESSAGEUTILS.sendLang(player1.getPlayer(), "trade.aborted", Map.of("%player%", player2.getPlayer().getName()));
-        MESSAGEUTILS.sendLang(player2.getPlayer(), "trade.aborted", Map.of("%player%", player1.getPlayer().getName()));
+        MESSAGEUTILS.sendLang(player1.getPlayer(), "trade.aborted", Map.of("%player%", VaultHelper.getDisplayName(player2.getPlayer())));
+        MESSAGEUTILS.sendLang(player2.getPlayer(), "trade.aborted", Map.of("%player%", VaultHelper.getDisplayName(player1.getPlayer())));
         SoundUtils.playSound(player1.getPlayer(), "aborted");
         SoundUtils.playSound(player2.getPlayer(), "aborted");
     }
@@ -115,8 +116,8 @@ public class Trade {
                     return;
                 }
 
-                MESSAGEUTILS.sendLang(player1.getPlayer(), "trade.completed", Map.of("%player%", player2.getPlayer().getName()));
-                MESSAGEUTILS.sendLang(player2.getPlayer(), "trade.completed", Map.of("%player%", player1.getPlayer().getName()));
+                MESSAGEUTILS.sendLang(player1.getPlayer(), "trade.completed", Map.of("%player%", VaultHelper.getDisplayName(player2.getPlayer())));
+                MESSAGEUTILS.sendLang(player2.getPlayer(), "trade.completed", Map.of("%player%", VaultHelper.getDisplayName(player1.getPlayer())));
                 SoundUtils.playSound(player1.getPlayer(), "completed");
                 SoundUtils.playSound(player2.getPlayer(), "completed");
 

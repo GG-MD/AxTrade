@@ -4,6 +4,7 @@ import com.artillexstudios.axtrade.request.Request;
 import com.artillexstudios.axtrade.request.Requests;
 import com.artillexstudios.axtrade.trade.Trade;
 import com.artillexstudios.axtrade.trade.Trades;
+import com.artillexstudios.axtrade.utils.VaultHelper;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -47,7 +48,7 @@ public class TradeListeners implements Listener {
             if (request.getReceiver().equals(event.getPlayer())) {
                 iterator.remove();
                 if (!request.isActive()) continue;
-                MESSAGEUTILS.sendLang(request.getSender(), "request.expired", Map.of("%player%", request.getReceiver().getName()));
+                MESSAGEUTILS.sendLang(request.getSender(), "request.expired", Map.of("%player%", VaultHelper.getDisplayName(request.getReceiver())));
             }
         }
     }

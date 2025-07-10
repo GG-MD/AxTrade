@@ -1,6 +1,6 @@
 package com.artillexstudios.axtrade.trade;
 
-import com.artillexstudios.axapi.gui.SignInput;
+import net.wesjd.anvilgui.AnvilGUI;
 import com.artillexstudios.axapi.nms.NMSHandlers;
 import com.artillexstudios.axapi.scheduler.Scheduler;
 import com.artillexstudios.axapi.utils.Cooldown;
@@ -264,35 +264,54 @@ public class TradeGui extends GuiFrame {
         trade.prepTime = System.currentTimeMillis();
         event.getWhoClicked().closeInventory();
 
-        var lines = StringUtils.formatList(LANG.getStringList("currency-editor-sign"));
-        lines.set(0, Component.empty());
-
-        var sign = new SignInput.Builder().setLines(lines).setHandler((player1, result) -> {
-            if (trade.isEnded()) return;
+        new AnvilGUI.Builder()
+                .onClick((slot, stateSnapshot) -> {
+                    if (slot != AnvilGUI.Slot.OUTPUT) return java.util.Collections.emptyList();
+                    
+                    String text = stateSnapshot.getText();
+                    if (trade.isEnded()) return java.util.List.of(AnvilGUI.ResponseAction.close());
+                    
+                    // Проверяем, является ли введенный текст числом
+                    final Double unformatted = NumberUtils.parseNumber(text);
+                    if (unformatted == null && !com.artillexstudios.axapi.utils.NumberUtils.isDouble(text)) {
+                        // Если не число - обновляем текст в AnvilGUI и не закрываем
+                        return java.util.List.of(AnvilGUI.ResponseAction.replaceInputText(LANG.getString("currency-editor-anvil.invalid-number")));
+                    }
+                    
             trade.prepTime = System.currentTimeMillis();
-            String am = result[0];
-            TradePlayer.Result addResult = player.setCurrency(currencyStr, am);
+                    
+                    TradePlayer.Result addResult = player.setCurrency(currencyStr, text);
             if (addResult == TradePlayer.Result.SUCCESS) {
-                MESSAGEUTILS.sendLang(player1, "currency-editor.success");
+                        MESSAGEUTILS.sendLang(stateSnapshot.getPlayer(), "currency-editor.success");
             } else {
                 switch (addResult) {
                     case NOT_ENOUGH_CURRENCY:
-                        MESSAGEUTILS.sendLang(player1, "currency-editor.not-enough");
+                                MESSAGEUTILS.sendLang(stateSnapshot.getPlayer(), "currency-editor.not-enough");
                         break;
                     default:
-                        MESSAGEUTILS.sendLang(player1, "currency-editor.failed");
+                                MESSAGEUTILS.sendLang(stateSnapshot.getPlayer(), "currency-editor.failed");
                         break;
                 }
             }
+                    
+                    // Просто закрываем AnvilGUI, onClose откроет торговое GUI
+                    return java.util.List.of(AnvilGUI.ResponseAction.close());
+                })
+                .onClose(player1 -> {
+                    // Всегда возвращаемся в торговое GUI (как в оригинальном коде)
+                    if (!trade.isEnded()) {
             Scheduler.get().run(scheduledTask -> {
-                if (trade.isEnded()) return;
                 gui.open(player.getPlayer());
                 inSign = false;
                 trade.update();
                 updateTitle();
             });
-        }).build(player.getPlayer());
-        sign.open();
+                    }
+                })
+                .text(LANG.getString("currency-editor-anvil.input-item"))
+                .title(StringUtils.formatToString(LANG.getString("currency-editor-anvil.title")))
+                .plugin(com.artillexstudios.axtrade.AxTrade.getInstance())
+                .open(player.getPlayer());
     }
 
     public void handleShulkerClick(InventoryClickEvent event) {
