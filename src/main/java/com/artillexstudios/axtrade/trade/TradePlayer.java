@@ -126,7 +126,16 @@ public class TradePlayer {
         if (currencyHook == null) return Result.CURRENCY_NOT_FOUND;
         amount = currencyHook.usesDouble() ? amount : Math.round(amount);
         if (amount < 0.1) return Result.TOO_LOW_VALUE;
-        if (currencyHook.getBalance(player.getUniqueId()) < amount) return Result.NOT_ENOUGH_CURRENCY;
+        
+        if (currencyHook instanceof com.artillexstudios.axtrade.hooks.currency.ExperienceHook) {
+            com.artillexstudios.axtrade.hooks.currency.ExperienceHook expHook = (com.artillexstudios.axtrade.hooks.currency.ExperienceHook) currencyHook;
+            if (!expHook.hasEnoughExperienceForLevels(player.getUniqueId(), (int) amount)) {
+                return Result.NOT_ENOUGH_CURRENCY;
+            }
+        } else {
+            if (currencyHook.getBalance(player.getUniqueId()) < amount) return Result.NOT_ENOUGH_CURRENCY;
+        }
+        
         currencies.put(currencyHook, amount);
         return Result.SUCCESS;
     }

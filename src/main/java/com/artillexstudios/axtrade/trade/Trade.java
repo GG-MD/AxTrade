@@ -85,16 +85,32 @@ public class Trade {
     public void complete() {
         end();
         for (Map.Entry<CurrencyHook, Double> entry : player1.getCurrencies().entrySet()) {
-            if (entry.getKey().getBalance(player1.getPlayer().getUniqueId()) < entry.getValue()) {
-                abort(true);
-                return;
+            if (entry.getKey() instanceof com.artillexstudios.axtrade.hooks.currency.ExperienceHook) {
+                com.artillexstudios.axtrade.hooks.currency.ExperienceHook expHook = (com.artillexstudios.axtrade.hooks.currency.ExperienceHook) entry.getKey();
+                if (!expHook.hasEnoughExperienceForLevels(player1.getPlayer().getUniqueId(), entry.getValue().intValue())) {
+                    abort(true);
+                    return;
+                }
+            } else {
+                if (entry.getKey().getBalance(player1.getPlayer().getUniqueId()) < entry.getValue()) {
+                    abort(true);
+                    return;
+                }
             }
         }
 
         for (Map.Entry<CurrencyHook, Double> entry : player2.getCurrencies().entrySet()) {
-            if (entry.getKey().getBalance(player2.getPlayer().getUniqueId()) < entry.getValue()) {
-                abort(true);
-                return;
+            if (entry.getKey() instanceof com.artillexstudios.axtrade.hooks.currency.ExperienceHook) {
+                com.artillexstudios.axtrade.hooks.currency.ExperienceHook expHook = (com.artillexstudios.axtrade.hooks.currency.ExperienceHook) entry.getKey();
+                if (!expHook.hasEnoughExperienceForLevels(player2.getPlayer().getUniqueId(), entry.getValue().intValue())) {
+                    abort(true);
+                    return;
+                }
+            } else {
+                if (entry.getKey().getBalance(player2.getPlayer().getUniqueId()) < entry.getValue()) {
+                    abort(true);
+                    return;
+                }
             }
         }
 

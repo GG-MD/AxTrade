@@ -44,50 +44,34 @@ public class ExperienceHook implements CurrencyHook {
     @Override
     public double getBalance(@NotNull UUID player) {
         final Player pl = Bukkit.getPlayer(player);
-        // Возвращаем уровень игрока вместо общих очков опыта
         return pl.getLevel();
     }
 
     @Override
     public CompletableFuture<Boolean> giveBalance(@NotNull UUID player, double amount) {
         final Player pl = Bukkit.getPlayer(player);
-        // Добавляем уровни, а не очки опыта
-        changeLevels(pl, (int) amount);
+        int expToAdd = getExpFromLevel((int) amount);
+        changeExp(pl, expToAdd);
         return CompletableFuture.completedFuture(true);
     }
 
     @Override
     public CompletableFuture<Boolean> takeBalance(@NotNull UUID player, double amount) {
         final Player pl = Bukkit.getPlayer(player);
-        // Убираем уровни, а не очки опыта
-        changeLevels(pl, (int) (amount * -1));
+        int expToRemove = getExpFromLevel((int) amount);
+        changeExp(pl, -expToRemove);
         return CompletableFuture.completedFuture(true);
     }
 
-    /**
-     * Изменяет уровни игрока на указанное количество
-     * @param player игрок
-     * @param levels количество уровней для изменения (может быть отрицательным)
-     */
-    private void changeLevels(@NotNull Player player, int levels) {
-        int currentLevel = player.getLevel();
-        int newLevel = currentLevel + levels;
-        
-        // Не позволяем уровню быть отрицательным
-        if (newLevel < 0) {
-            newLevel = 0;
-        }
-        
-        // Устанавливаем новый уровень
-        player.setLevel(newLevel);
-        
-        // Если уровень установлен в 0, сбрасываем и прогресс опыта
-        if (newLevel == 0) {
-            player.setExp(0);
-        }
+    public boolean hasEnoughExperienceForLevels(@NotNull UUID player, int levels) {
+        final Player pl = Bukkit.getPlayer(player);
+        int currentExp = getExp(pl);
+        int requiredExp = getExpFromLevel(levels);
+        return currentExp >= requiredExp;
     }
 
-    // Оставляем старые методы для совместимости, но они больше не используются
+
+
     // credit: https://gist.githubusercontent.com/Jikoo/30ec040443a4701b8980/raw/0745ca25a8aaaf749ba2f2164a809e998f6a37c4/Experience.java
     private int getExp(@NotNull Player player) {
         return getExpFromLevel(player.getLevel()) + Math.round(getExpToNext(player.getLevel()) * player.getExp());

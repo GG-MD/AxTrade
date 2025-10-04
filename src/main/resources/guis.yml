@@ -80,7 +80,7 @@ own:
     lore:
       - "&7Your offer"
       - ""
-      - " &7- &fAmount: &#00ffdd%amount% EXP"
+      - " &7- &fAmount: &#00ffdd%amount% Levels"
       - ""
       - "&#00ffdd&l> &#00ffddClick &8- &#00ffddChange Amount"
 
@@ -131,7 +131,7 @@ partner:
     lore:
       - "&7%partner-name%'s offer"
       - ""
-      - " &7- &fAmount: &#00ffdd%amount% EXP"
+      - " &7- &fAmount: &#00ffdd%amount% Levels"
       - ""
       - "&#00ffdd&l> &#00ffddClick &8- &#00ffddChange Amount"
 
