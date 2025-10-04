@@ -61,9 +61,11 @@ public class Requests {
             return;
         }
 
-        if (CONFIG.getBoolean("prevent-vanished-trading", true) && (!sender.canSee(sender) || !receiver.canSee(receiver))) {
-            MESSAGEUTILS.sendLang(sender, "commands.invalid-player", replacements);
-            return;
+        if (CONFIG.getBoolean("prevent-vanished-trading", true)) {
+            if (!sender.canSee(receiver) || !receiver.isOnline()) {
+                MESSAGEUTILS.sendLang(sender, "commands.invalid-player", replacements);
+                return;
+            }
         }
 
         if (TOGGLED.getBoolean("toggled." + receiver.getUniqueId())) {
