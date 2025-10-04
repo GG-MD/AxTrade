@@ -130,13 +130,13 @@
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-platform-bukkit</artifactId>
-            <version>4.4.0</version>
+            <version>4.4.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>dev.triumphteam</groupId>
             <artifactId>triumph-gui</artifactId>
-            <version>3.1.11</version>
+            <version>3.1.13</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -203,7 +203,7 @@
         <dependency>
             <groupId>net.wesjd</groupId>
             <artifactId>anvilgui</artifactId>
-            <version>1.10.7-SNAPSHOT</version>
+            <version>1.10.9-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
