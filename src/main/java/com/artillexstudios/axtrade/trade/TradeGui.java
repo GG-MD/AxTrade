@@ -180,9 +180,7 @@ public class TradeGui extends GuiFrame {
         if (!slots.contains(event.getSlot())) {
             event.setCancelled(true);
             if (event.getCursor() == null) return;
-            player.getPlayer().getInventory().addItem(event.getCursor().clone()).values().forEach(item -> {
-                player.getPlayer().getWorld().dropItem(player.getPlayer().getEyeLocation(), item);
-            });
+            player.getPlayer().getInventory().addItem(event.getCursor().clone());
             event.getCursor().setAmount(0);
             return;
         }
